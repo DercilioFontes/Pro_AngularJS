@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="demo">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 5</title>
+    <script src="angular.js"></script>
+    <link rel="stylesheet" href="bootstrap.css" />
+    <link rel="stylesheet" href="bootstrap-theme.css" />
+    <script>
+      const myApp = angular.module("demo", []);
+
+      myApp.controller("demoCtrl", function($scope, $http) {
+        const promise = $http.get("todo.json");
+        $scope.todos = [];
+
+        promise
+          .then(
+            function(response) {
+              $scope.todos = response.data;
+            },
+            function() {
+              $scope.todos = [{ action: "Error" }];
+            }
+          )
+          .then(function() {
+            $scope.todos.push({ action: "Request Complete" });
+          });
+      });
+    </script>
+  </head>
+  <body ng-controller="demoCtrl">
+    <div class="panel">
+      <h1>To Do</h1>
+      <table class="table">
+        <tr>
+          <td>Action</td>
+          <td>Done</td>
+        </tr>
+        <tr ng-repeat="item in todos">
+          <td>{{item.action}}</td>
+          <td>{{item.done}}</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
