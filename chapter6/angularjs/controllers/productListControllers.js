@@ -6,7 +6,8 @@ angular
     $scope,
     $filter,
     productListActiveClass,
-    productListPageCount
+    productListPageCount,
+    cart
   ) {
     let selectedCategory = null;
 
@@ -35,5 +36,9 @@ angular
 
     $scope.getPageClass = function(page) {
       return $scope.selectedPage === page ? productListActiveClass : "";
+    };
+
+    $scope.addProductToCart = function(product) {
+      cart.addProduct(product.id, product.name, product.price);
     };
   });
