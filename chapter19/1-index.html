@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+  <head>
+    <title>DOM API Services</title>
+    <script src="angular.js"></script>
+    <link href="bootstrap.css" rel="stylesheet" />
+    <link href="bootstrap-theme.css" rel="stylesheet" />
+    <script>
+      angular
+        .module("exampleApp", [])
+        .controller("defaultCtrl", function ($scope, $interval, $location) {
+          $interval(function () {
+            $scope.time = new Date().toTimeString();
+          }, 2000);
+
+          $scope.absUrl = $location.absUrl();
+          $scope.hash = $location.hash();
+          $scope.host = $location.host();
+          $scope.path = $location.path();
+          $scope.port = $location.port();
+          $scope.protocol = $location.protocol();
+          $scope.search = $location.search();
+          $scope.url = $location.url();
+        });
+    </script>
+  </head>
+  <body ng-controller="defaultCtrl" class="well">
+    <div class="panel panel-default">
+      <h4 class="panel-heading">Time</h4>
+      <div class="panel-body">The time is: {{time}}</div>
+      <div>
+        <p>absUrl: {{absUrl}}</p>
+        <p>hash: {{hash}}</p>
+        <p>host: {{host}}</p>
+        <p>path: {{path}}</p>
+        <p>port: {{port}}</p>
+        <p>protocol: {{protocol}}</p>
+        <p>search: {{search}}</p>
+        <p>url: {{url}}</p>
+      </div>
+    </div>
+  </body>
+</html>
