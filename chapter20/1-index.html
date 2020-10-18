@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+  <head>
+    <title>Ajax</title>
+    <script src="angular.js"></script>
+    <link href="bootstrap.css" rel="stylesheet" />
+    <link href="bootstrap-theme.css" rel="stylesheet" />
+    <script>
+      "use strict";
+
+      angular
+        .module("exampleApp", [])
+        .config(function ($httpProvider) {
+          $httpProvider.interceptors.push(function () {
+            return {
+              request: function (config) {
+                config.url = "productData.json";
+                return config;
+              },
+              response: function (response) {
+                console.log("Data Count: " + response.data.length);
+                return response;
+              },
+            };
+          });
+
+          // $httpProvider.defaults.transformResponse.push(function (
+          //   data,
+          //   headers
+          // ) {
+          //   if (
+          //     headers("content-type").includes("application/xml") &&
+          //     angular.isString(data)
+          //   ) {
+          //     const products = [];
+          //     const productElements = angular
+          //       .element(data.trim())
+          //       .find("product");
+          //     for (let i = 0; i < productElements.length; i++) {
+          //       const product = productElements.eq(i);
+          //       products.push({
+          //         name: product.attr("name"),
+          //         category: product.attr("category"),
+          //         price: product.attr("price"),
+          //       });
+          //     }
+          //     return products;
+          //   } else {
+          //     return JSON.parse(data);
+          //   }
+          // });
+        })
+        .controller("defaultCtrl", function ($scope, $http, $log) {
+          $scope.loadData = function () {
+            $http.get("doesnotexit.json").then(function (response) {
+              $scope.products = response.data;
+            });
+          };
+
+          $scope.sendData = function () {
+            var config = {
+              headers: {
+                "content-type": "application/xml",
+              },
+              transformRequest: function (data, headers) {
+                var rootElem = angular.element("<xml>");
+                var productsElem = angular.element("<products>");
+                rootElem.append(productsElem);
+                for (var i = 0; i < data.length; i++) {
+                  var prodElem = angular.element("<product>");
+                  prodElem.attr("name", data[i].name);
+                  prodElem.attr("category", data[i].category);
+                  prodElem.attr("price", data[i].price);
+                  productsElem.append(prodElem);
+                }
+
+                return rootElem.html();
+              },
+            };
+            $http.post("index.html", $scope.products, config);
+          };
+        });
+    </script>
+  </head>
+  <body ng-controller="defaultCtrl">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-hide="products.length">
+              <td colspan="3" class="text-center">No Data</td>
+            </tr>
+            <tr ng-repeat="item in products">
+              <td>{{item.name}}</td>
+              <td>{{item.category}}</td>
+              <td>{{item.price | currency}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <button class="btn btn-primary" ng-click="loadData()">
+            Load Data
+          </button>
+          <button class="btn btn-primary" ng-click="sendData()">
+            Send Data
+          </button>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
